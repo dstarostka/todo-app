@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <title>Registration</title>
+</head>
+<body>
+<div class="container">
+    <div class="row main">
+
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h2 class="title">New User Registration</h2>
+                <hr/>
+            </div>
+        </div>
+
+        <div class="main-login main-center">
+
+            <form autocomplete="off" class="form-horizontal" method="post" action="#" th:action="@{/register}" th:object="${user}">
+
+                <div th:if="${confirmationMessage}" class="alert alert-success"
+                     role="alert" th:text=${confirmationMessage}></div>
+
+                <div th:if="${errorMessage}"
+                     class="alert alert-danger" role="alert"
+                     th:text="${errorMessage}"></div>
+
+                <div th:if="${alreadyRegisteredMessage}" class="alert alert-danger"
+                     role="alert" th:text=${alreadyRegisteredMessage}></div>
+
+                <div th:if="${#fields.hasErrors('firstName')}"
+                     th:errors="*{firstName}"
+                     class="validation-message alert alert-danger" role="alert"></div>
+
+                <div th:if="${#fields.hasErrors('lastName')}"
+                     th:errors="*{lastName}"
+                     class="validation-message alert alert-danger" role="alert"></div>
+
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                     class="validation-message alert alert-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"for="name" class="cols-sm-2 control-label"></label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input th:field="*{firstName}" type="text" class="form-control" name="name" id="first name" placeholder="First Name" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" class="cols-sm-2 control-label"></label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input th:field="*{lastName}" type="text" class="form-control" name="last name" id="name"  placeholder="Last Name"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="cols-sm-2 control-label"></label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                            <input th:field="*{email}" type="email" id="email" name="email" class="form-control" placeholder="Your Email" data-error="This email address is invalid" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group ">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

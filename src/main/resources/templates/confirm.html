@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script src="../js/script.js" type="text/javascript"></script>
+    <title>Registration</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css">
+    <link rel="stylesheet" href="/vendors/formvalidation/dist/css/formValidation.min.css">
+</head>
+</head>
+<body>
+<div class="container">
+    <div class="row main">
+
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h2 class="title">Set Your Password</h2>
+                <hr/>
+            </div>
+        </div>
+
+        <div class="main-login main-center">
+
+            <div th:if="${successMessage}" class="alert alert-success"
+                 role="alert" th:text=${successMessage}></div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                 th:text="${errorMessage}"></div>
+
+            <div th:if="${invalidToken}" class="alert alert-danger"
+                 role="alert" th:text=${invalidToken}></div>
+
+            <form th:if="!${invalidToken}" th:object="${setPassword}" th:action="@{/confirm}" id="passwordForm" class="form-horizontal" method="post" action="#">
+
+                <input type="hidden" name="token" th:value=${confirmationToken}>
+
+                <div class="form-group">
+                    <label for="password" class="cols-sm-2 control-label"></label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input  type="password" class="form-control" name="password" id="password" placeholder="Password" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm" class="cols-sm-2 control-label"></label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm Password"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group ">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js"></script>
+<script src="/vendors/formvalidation/dist/js/FormValidation.min.js"></script>
+<script src="/vendors/formvalidation/dist/js/plugins/Tachyons.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(e) {
+    const form = document.getElementById('passwordForm');
+    const fv = FormValidation.formValidation(
+        form,
+        {
+            fields: {
+                password: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The password is required'
+                        }
+                    }
+                },
+                confirm: {
+                    validators: {
+                        identical: {
+                            compare: function() {
+                                return form.querySelector('[name="password"]').value;
+                            },
+                            message: 'The password and its confirm are not the same'
+                        }
+                    }
+                },
+            },
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                tachyons: new FormValidation.plugins.Tachyons(),
+                submitButton: new FormValidation.plugins.SubmitButton(),
+                icon: new FormValidation.plugins.Icon({
+                    valid: 'fa fa-check',
+                    invalid: 'fa fa-times',
+                    validating: 'fa fa-refresh'
+                }),
+            },
+        }
+    );
+
+    form.querySelector('[name="password"]').addEventListener('input', function() {
+        fv.revalidateField('confirm');
+    });
+});
+</script>
+
+</body>
+</html>

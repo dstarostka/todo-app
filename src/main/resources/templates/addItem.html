@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Item</title>
+</head>
+<body>
+    <div align="center">
+        <form action="#" th:action="@{/addItem}" th:object="${todoItem}" method="post" >
+            <table>
+                <tr>
+                    <th><label>Title</label></th>
+                    <td><input type="text" th:field="*{title}" /></td>
+                </tr>
+                <tr>
+                    <th><label>Details</label></th>
+                    <td><textarea type="text" th:field="*{details}"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label>Deadline</label></th>
+                    <td><input type="text" th:field="*{deadline}"/></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
