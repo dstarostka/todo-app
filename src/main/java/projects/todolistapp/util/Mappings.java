@@ -8,6 +8,7 @@ public class Mappings {
     public static final String CONFIRM = "/confirm";
     public static final String USER_REGISTRATION = "/user/registration";
     public static final String USER_CONFIRM = "/user/confirm";
+    public static final String USER_LOGIN = "/user/login";
 
     private Mappings(){}
 }

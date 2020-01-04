@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-public class RegistrationController {
+public class  RegistrationController {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserService userService;
