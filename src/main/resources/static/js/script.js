@@ -16,3 +16,9 @@ function addItem() {
         window.location.href = "http://localhost:8080/addItem";
     };
 }
+
+function gotoItems() {
+    document.getElementById("idx").onclick = function() {
+        window.location.href = "http://localhost:8080/items";
+    };
+}

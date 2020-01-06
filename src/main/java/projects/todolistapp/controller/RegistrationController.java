@@ -24,6 +24,7 @@ import java.util.UUID;
 @RestController
 public class  RegistrationController {
 
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserService userService;
     private EmailService emailService;
@@ -53,7 +54,8 @@ public class  RegistrationController {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         } else {
             BeanUtils.copyProperties(userDTO, user);
-            user.setActive(false);
+            user.setEnabled(false);
+            user.setRoles("USER");
             user.setConfirmationToken(UUID.randomUUID().toString());
             userService.saveUser(user);
 
@@ -66,7 +68,7 @@ public class  RegistrationController {
 
             emailService.sendEmail(registrationEmail);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(Mappings.USER_CONFIRM)
@@ -91,8 +93,8 @@ public class  RegistrationController {
         }
 
         User user = userService.findByConfirmationToken(token);
-        user.setPassword(requestParams.get("password"));
-        user.setActive(true);
+        user.setPassword(bCryptPasswordEncoder.encode(requestParams.get("password")));
+        user.setEnabled(true);
         userService.saveUser(user);
 
         return new ResponseEntity<>("Password saved", HttpStatus.ACCEPTED);

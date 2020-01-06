@@ -1,26 +1,44 @@
 package projects.todolistapp.controller;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import projects.todolistapp.util.Mappings;
-import java.util.Date;
-import java.util.Map;
+import projects.todolistapp.model.DTO.AuthenticationRequest;
+import projects.todolistapp.model.DTO.AuthenticationResponse;
+import projects.todolistapp.service.UserServiceImpl;
+import projects.todolistapp.util.JwtUtil;
 
-@RestController(value = Mappings.USER_LOGIN)
+@RestController
 public class LoginController {
 
-    @PostMapping
-    public String login(@RequestBody Map<String, String> requestParams) {
-        long currentTimeMillis = System.currentTimeMillis();
-        return Jwts.builder()
-                .setSubject(requestParams.get("email"))
-                .claim("roles", "USER")
-                .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + 20000))
-                .signWith(SignatureAlgorithm.HS512, requestParams.get("password"))
-                .compact();
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private JwtUtil jwtTokenUtil;
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            throw new Exception("Incorrect username or password", e);
+        }
+
+        final UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }
