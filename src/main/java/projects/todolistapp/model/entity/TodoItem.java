@@ -1,11 +1,11 @@
 package projects.todolistapp.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.hateoas.RepresentationModel;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -20,11 +20,7 @@ public class TodoItem extends RepresentationModel {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private int id;
-/*
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-*/
+
     @Column(name = "title")
     private String title;
 
@@ -42,4 +38,9 @@ public class TodoItem extends RepresentationModel {
         this.details = details;
         this.deadline = deadline;
     }
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

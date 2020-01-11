@@ -13,9 +13,10 @@ import projects.todolistapp.model.DTO.AuthenticationRequest;
 import projects.todolistapp.model.DTO.AuthenticationResponse;
 import projects.todolistapp.service.UserServiceImpl;
 import projects.todolistapp.util.JwtUtil;
+import projects.todolistapp.util.Mappings;
 
 @RestController
-public class LoginController {
+public class AuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -26,7 +27,7 @@ public class LoginController {
     @Autowired
     private JwtUtil jwtTokenUtil;
 
-    @PostMapping("/authenticate")
+    @PostMapping(Mappings.USER_AUTHENTICATION)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
         try {
             authenticationManager.authenticate(

@@ -1,5 +1,6 @@
 package projects.todolistapp.model.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import javax.persistence.*;
 
@@ -36,4 +37,18 @@ public class User {
 
     @Column(name = "confirmation_token")
     private String confirmationToken;
+
+    public User() {}
+
+    @Builder
+    public User(String email, String username, String roles, String firstName, String lastName, boolean enabled,
+                String confirmationToken) {
+        this.email = email;
+        this.username = username;
+        this.roles = roles;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.enabled = enabled;
+        this.confirmationToken = confirmationToken;
+    }
 }

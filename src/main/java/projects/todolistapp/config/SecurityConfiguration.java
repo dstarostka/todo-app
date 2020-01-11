@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import projects.todolistapp.util.Mappings;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -28,22 +29,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.csrf().disable().authorizeRequests()
-                .antMatchers(Mappings.ITEMS).hasRole("USER")
-                .antMatchers(Mappings.USER_REGISTRATION).permitAll()
-                .antMatchers(Mappings.USER_CONFIRM).permitAll()
-                .antMatchers("/authenticate").permitAll()
-                .and()
-                .formLogin()
-                .and()
-                .logout()
-                .logoutUrl("/logout");
-         */
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/authenticate").permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement()
+                .authorizeRequests()
+                .antMatchers(Mappings.USER_AUTHENTICATION, Mappings.USER_REGISTRATION, Mappings.USER_CONFIRM)
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
