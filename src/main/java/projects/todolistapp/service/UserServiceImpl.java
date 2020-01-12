@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import projects.todolistapp.model.entity.MyUserDetails;
 import projects.todolistapp.model.entity.User;
 import projects.todolistapp.model.repository.UserRepository;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).get();
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -39,11 +38,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> optional = Optional.ofNullable(userRepository.findByUsername(username));
+        optional.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
 
-        user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
-
-        return user.map(MyUserDetails::new).get();
+        return optional.map(User::new).get();
     }
 
     public static String getLoggedInUserName() {
@@ -59,6 +57,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public int getUserId(String username) {
-        return userRepository.findByUsername(username).get().getId();
+        return userRepository.findByUsername(username).getId();
     }
 }

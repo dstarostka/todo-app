@@ -14,7 +14,9 @@ import projects.todolistapp.model.entity.TodoItem;
 import projects.todolistapp.service.TodoItemService;
 import projects.todolistapp.service.UserServiceImpl;
 import projects.todolistapp.util.Mappings;
+
 import java.util.List;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController

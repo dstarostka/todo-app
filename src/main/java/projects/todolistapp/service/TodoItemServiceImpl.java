@@ -33,22 +33,20 @@ public class TodoItemServiceImpl implements TodoItemService {
 
     @Override
     public TodoItem getItem(int id) {
-        TodoItem todoItem = loggedInUserVerification(id);
-
-        return todoItem;
+        return getTodoItemByUserIdOrThrow(id);
     }
 
     @Override
     public TodoItem addItem(TodoItem item) {
         String loggedInUsername = UserServiceImpl.getLoggedInUserName();
-        User user = userRepository.findByUsername(loggedInUsername).get();
+        User user = userRepository.findByUsername(loggedInUsername);
         item.setUser(user);
 
         return todoItemRepository.save(item);
     }
 
     public TodoItem updateItem(int id, TodoItemDTO item) {
-        TodoItem itemToUpdate = loggedInUserVerification(id);
+        TodoItem itemToUpdate = getTodoItemByUserIdOrThrow(id);
 
         itemToUpdate.setTitle(item.getTitle());
         itemToUpdate.setDetails(item.getDetails());
@@ -59,11 +57,11 @@ public class TodoItemServiceImpl implements TodoItemService {
 
     @Override
     public void removeItem(int id) {
-        loggedInUserVerification(id);
+        getTodoItemByUserIdOrThrow(id);
         todoItemRepository.deleteById(id);
     }
 
-    private TodoItem loggedInUserVerification(int id) {
+    private TodoItem getTodoItemByUserIdOrThrow(int id) {
         String loggedInUserName = UserServiceImpl.getLoggedInUserName();
         int loggedInUserId = userServiceImpl.getUserId(loggedInUserName);
         TodoItem todoItem = todoItemRepository.findById(id);

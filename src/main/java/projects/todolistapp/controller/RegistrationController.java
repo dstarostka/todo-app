@@ -15,6 +15,7 @@ import projects.todolistapp.model.entity.User;
 import projects.todolistapp.service.EmailService;
 import projects.todolistapp.service.UserService;
 import projects.todolistapp.util.Mappings;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
@@ -49,9 +50,14 @@ public class  RegistrationController {
             throw new UserAlreadyRegisteredException("User already registered under provided email address");
         }
 
+        if (userService.findByUsername(userDTO.getUsername()) != null) {
+            throw new UserAlreadyRegisteredException("User already registered under provided username");
+        }
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
+
         User user = User.builder()
                 .email(userDTO.getEmail())
                 .username(userDTO.getUsername())
@@ -83,8 +89,8 @@ public class  RegistrationController {
     }
 
     @PostMapping(Mappings.USER_CONFIRM)
-    public ResponseEntity processConfirmationForm(@RequestParam("token") String token, @RequestBody Map<String,
-                                                    String> requestParams, BindingResult bindingResult) {
+    public ResponseEntity processConfirmationForm(@RequestParam("token") String token,
+                                          @RequestBody Map<String, String> requestParams, BindingResult bindingResult) {
 
         Zxcvbn passwordCheck = new Zxcvbn();
         Strength passwordStrength = passwordCheck.measure(requestParams.get("password"));
