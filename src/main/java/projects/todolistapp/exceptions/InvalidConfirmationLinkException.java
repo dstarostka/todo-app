@@ -1,6 +1,7 @@
 package projects.todolistapp.exceptions;
 
 public class InvalidConfirmationLinkException extends RuntimeException {
+
     public InvalidConfirmationLinkException(String message) {
         super(message);
     }

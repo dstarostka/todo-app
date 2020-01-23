@@ -16,11 +16,14 @@ import projects.todolistapp.util.Mappings;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserDetailsService userService;
+    private JwtFilter jwtFilter;
 
     @Autowired
-    private JwtFilter jwtFilter;
+    public SecurityConfiguration(UserDetailsService userService, JwtFilter jwtFilter) {
+        this.userService = userService;
+        this.jwtFilter = jwtFilter;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

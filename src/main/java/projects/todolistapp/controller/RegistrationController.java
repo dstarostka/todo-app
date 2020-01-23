@@ -15,7 +15,6 @@ import projects.todolistapp.model.entity.User;
 import projects.todolistapp.service.EmailService;
 import projects.todolistapp.service.UserService;
 import projects.todolistapp.util.Mappings;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;

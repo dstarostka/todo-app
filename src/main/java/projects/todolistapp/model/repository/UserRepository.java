@@ -6,6 +6,7 @@ import projects.todolistapp.model.entity.User;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
+    User save(User user);
     User findById(int id);
     User findByEmail(String email);
     User findByUsername(String username);

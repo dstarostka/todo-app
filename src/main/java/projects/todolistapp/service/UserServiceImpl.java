@@ -13,8 +13,17 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 
     @Override
     public User findByEmail(String email) {
@@ -32,11 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optional = Optional.ofNullable(userRepository.findByUsername(username));
         optional.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
@@ -44,7 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return optional.map(User::new).get();
     }
 
-    public static String getLoggedInUserName() {
+    public String getLoggedInUsername() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String loggedInUsername;
 
@@ -53,10 +57,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             loggedInUsername = principal.toString();
         }
-        return loggedInUsername;
-    }
 
-    public int getUserId(String username) {
-        return userRepository.findByUsername(username).getId();
+        return userRepository.findByUsername(loggedInUsername).getUsername();
     }
 }

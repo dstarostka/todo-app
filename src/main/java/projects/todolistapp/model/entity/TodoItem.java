@@ -33,7 +33,8 @@ public class TodoItem extends RepresentationModel {
     public TodoItem() {}
 
     @Builder
-    public TodoItem(String title, String details, LocalDate deadline) {
+    public TodoItem(int id, String title, String details, LocalDate deadline) {
+        this.id = id;
         this.title = title;
         this.details = details;
         this.deadline = deadline;

@@ -2,7 +2,6 @@ package projects.todolistapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import projects.todolistapp.exceptions.TodoItemNotFoundException;
 import projects.todolistapp.model.DTO.TodoItemDTO;
 import projects.todolistapp.model.entity.TodoItem;
 import projects.todolistapp.model.entity.User;
@@ -14,18 +13,20 @@ import java.util.List;
 @Service
 public class TodoItemServiceImpl implements TodoItemService {
 
-    @Autowired
     private TodoItemRepository todoItemRepository;
-
-    @Autowired
-    private UserServiceImpl userServiceImpl;
-
-    @Autowired
+    private UserService userService;
     private UserRepository userRepository;
 
-    public List<TodoItem> getItemsByUsername(String username) {
+    @Autowired
+    public TodoItemServiceImpl(TodoItemRepository todoItemRepository, UserService userService, UserRepository userRepository) {
+        this.todoItemRepository = todoItemRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
+
+    public List<TodoItem> getItemsByUsername() {
         List<TodoItem> items = new ArrayList();
-        for(TodoItem item : todoItemRepository.findByUserUsername(username)) {
+        for(TodoItem item : todoItemRepository.findByUserUsername(userService.getLoggedInUsername())) {
             items.add(item);
         }
         return items;
@@ -33,42 +34,30 @@ public class TodoItemServiceImpl implements TodoItemService {
 
     @Override
     public TodoItem getItem(int id) {
-        return getTodoItemByUserIdOrThrow(id);
+        return todoItemRepository.findById(id);
     }
 
     @Override
     public TodoItem addItem(TodoItem item) {
-        String loggedInUsername = UserServiceImpl.getLoggedInUserName();
-        User user = userRepository.findByUsername(loggedInUsername);
+        User user = userRepository.findByUsername(userService.getLoggedInUsername());
         item.setUser(user);
 
         return todoItemRepository.save(item);
     }
 
     public TodoItem updateItem(int id, TodoItemDTO item) {
-        TodoItem itemToUpdate = getTodoItemByUserIdOrThrow(id);
-
-        itemToUpdate.setTitle(item.getTitle());
-        itemToUpdate.setDetails(item.getDetails());
-        itemToUpdate.setDeadline(item.getDeadline());
+        TodoItem itemToUpdate = TodoItem.builder()
+                .id(id)
+                .title(item.getTitle())
+                .details(item.getDetails())
+                .deadline(item.getDeadline())
+                .build();
 
         return todoItemRepository.save(itemToUpdate);
     }
 
     @Override
     public void removeItem(int id) {
-        getTodoItemByUserIdOrThrow(id);
         todoItemRepository.deleteById(id);
-    }
-
-    private TodoItem getTodoItemByUserIdOrThrow(int id) {
-        String loggedInUserName = UserServiceImpl.getLoggedInUserName();
-        int loggedInUserId = userServiceImpl.getUserId(loggedInUserName);
-        TodoItem todoItem = todoItemRepository.findById(id);
-
-        if(loggedInUserId != todoItem.getUser().getId()) {
-            throw new TodoItemNotFoundException("Todo item not found");
-        }
-        return todoItem;
     }
 }

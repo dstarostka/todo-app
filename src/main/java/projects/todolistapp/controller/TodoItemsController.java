@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import projects.todolistapp.model.DTO.TodoItemDTO;
 import projects.todolistapp.model.entity.TodoItem;
 import projects.todolistapp.service.TodoItemService;
-import projects.todolistapp.service.UserServiceImpl;
 import projects.todolistapp.util.Mappings;
-
 import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
@@ -28,9 +25,8 @@ public class TodoItemsController {
 
     @GetMapping
     public ResponseEntity<CollectionModel<TodoItem>> getItems() {
-        String loggedInUsername = UserServiceImpl.getLoggedInUserName();
+        List<TodoItem> items = todoItemService.getItemsByUsername();
 
-        List<TodoItem> items = todoItemService.getItemsByUsername(loggedInUsername);
         items.forEach(item -> item.add(linkTo(TodoItemsController.class).slash(item.getId()).withSelfRel()));
         Link link = linkTo(TodoItemsController.class).withSelfRel();
         CollectionModel<TodoItem> collectionModel = new CollectionModel<>(items, link);
